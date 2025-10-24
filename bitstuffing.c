@@ -7,7 +7,7 @@ void bitStuffing(char data[])
     for(i = 0; i < strlen(data); i++) 
 {
         stuffed[j++] = data[i];
-        if(data[i] == '1) 
+        if(data[i] == '1') 
         {
             count++;
             if(count == 5) 
