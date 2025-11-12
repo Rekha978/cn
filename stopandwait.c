@@ -1,39 +1,40 @@
-#include<stdio.h>
-#include<stdlib.h>
-#include<time.h>
-void sender(inttotalFrames);
+#include <stdio.h>
+#include <stdlib.h>
+#include <time.h>
+
+void sender(int totalFrames);
 void receiver(int frame);
-void main()
-{
-inttotalFrames;
-	printf("=== Stop and wait protocol Simulation ===\n);
-	printf("Enter total no.of frames to send: ");
-	scanf("%d", &totalFrames);
-	sender(totalFrames);
+
+int main() {
+    int totalFrames;
+    printf("=== Stop and Wait Protocol Simulation ===\n");
+    printf("Enter total number of frames to send: ");
+    scanf("%d", &totalFrames);
+    sender(totalFrames);
+    return 0;
 }
-void sender(inttotalFrames)
-{
-	inti,ack,choice;
-	srand(time(NULL));
-	for(i=1;i<=totalFrames;i++)
-	{
-		printf("\nSender: Sending Frame %d",i);
-		printf("\nReceiver: Do you want to ACK Frame %d? (1=Yes,0=No): ",i);
-		scanf("%d",&choice);
-		if(choice==1)
-		{
-receiver(i);
-			printf("Sender: ACK %d received \n",i);
-		}
-		else
-		{
-			printf("Sender: ACK %d lost.Retransmitting...\n",i);
-i--
-		}
-	}
-	printf("\nAll %d frames sent suceesfully!\n",totalFrames);
+
+void sender(int totalFrames) {
+    int i, choice;
+    srand(time(NULL));
+
+    for (i = 1; i <= totalFrames; i++) {
+        printf("\nSender: Sending Frame %d", i);
+        printf("\nReceiver: Do you want to ACK Frame %d? (1=Yes, 0=No): ", i);
+        scanf("%d", &choice);
+
+        if (choice == 1) {
+            receiver(i);
+            printf("Sender: ACK %d received\n", i);
+        } else {
+            printf("Sender: ACK %d lost. Retransmitting...\n", i);
+            i--;  
+        }
+    }
+
+    printf("\nAll %d frames sent successfully!\n", totalFrames);
 }
-void receiver(int frame)
-{
-	printf("Reciever: Frame %d received.Sending ACK %d...\n,frame,frame);
+
+void receiver(int frame) {
+    printf("Receiver: Frame %d received. Sending ACK %d...\n", frame, frame);
 }
