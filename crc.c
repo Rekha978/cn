@@ -1,45 +1,105 @@
 #include <stdio.h>
 #include <string.h>
-#include <stdint.h>
-#define POLY_CRC12 0x80F
-#define POLY_CRC16 0x8005
-#define POLY_CCITT 0x1021
-unsigned int computeCRC(const unsigned char *data, size_t len, unsigned int poly, int bits) {
-    unsigned int crc = 0;
-    unsigned int msbMask = 1U << (bits - 1);
-    unsigned int mask = (1U << bits) - 1;    
 
-    for (size_t i = 0; i < len; i++) {
-        crc ^= (data[i] << (bits - 8));
-        for (int j = 0; j < 8; j++) {
-            if (crc & msbMask) {
-                crc = (crc << 1) ^ poly;
-            } else {
-                crc <<= 1;
-            }
-            crc &= mask; 
+unsigned int crc(const char *data)
+{
+    unsigned int poly = 0x180F;
+    unsigned int crc = 0x0005;
+
+    for (i = 0; i < strlen(data); i++)
+    {
+        unsigned char byte = data[i];
+
+        for (j = 0; j < 8; j++)
+        {
+            int bit = ((byte >> (7 - j)) & 1) ^ ((crc >> 11) & 1);
+            crc <<= 1;
+            if (bit)
+                crc ^= poly;
+            crc &= 0x0FFF;
         }
     }
-    return crc & mask;
+    return crc;
 }
 
-int main() {
-    unsigned char message[100];
+int main()
+{
+    char data[100];
 
-    printf("Enter a string: ");
-    fgets((char *)message, sizeof(message), stdin);
-    message[strcspn((char *)message, "\n")] = 0; 
+    printf("Enter a string:");
+    scanf("%s", data);
 
-    size_t len = strlen((char *)message);
+    printf("CRC12 = %03X\n", crc(data));
+}
 
-    unsigned int crc12   = computeCRC(message, len, POLY_CRC12, 12);
-    unsigned int crc16   = computeCRC(message, len, POLY_CRC16, 16);
-    unsigned int crcCCIT = computeCRC(message, len, POLY_CCITT, 16);
 
-    printf("\nMessage: %s\n", message);
-    printf("CRC-12    = 0x%03X\n", crc12);
-    printf("CRC-16    = 0x%04X\n", crc16);
-    printf("CRC-CCITT = 0x%04X\n", crcCCIT);
+#include <stdio.h>
+#include <string.h>
 
-    return 0;
+unsigned int crc16(const char *data)
+{
+    unsigned int poly = 0x8005;
+    unsigned int crc  = 0x0000;
+
+    for (i = 0; i < strlen(data); i++)
+    {
+        unsigned char byte = data[i];
+
+        for (j = 0; j < 8; j++)
+        {
+            int bit = ((byte >> (7 - j)) & 1) ^ ((crc >> 15) & 1);
+            crc <<= 1;
+            if (bit)
+                crc ^= poly;
+            crc &= 0xFFFF;
+        }
+    }
+    return crc;
+}
+
+int main()
+{
+    char data[100];
+
+    printf("Enter a string:");
+    scanf("%s", data);
+
+    printf("CRC-16 = %04X\n", crc16(data));
+}
+
+
+
+
+#include <stdio.h>
+#include <string.h>
+
+unsigned int crc_ccitt(const char *data)
+{
+    unsigned int poly = 0x1021;
+    unsigned int crc  = 0xFFFF;
+
+    for (i = 0; i < strlen(data); i++)
+    {
+        unsigned char byte = data[i];
+
+        for (j = 0; j < 8; j++)
+        {
+            int bit = ((byte >> (7 - j)) & 1) ^ ((crc >> 15) & 1);
+            crc <<= 1;
+            if (bit)
+                crc ^= poly;
+            crc &= 0xFFFF;
+        }
+    }
+    return crc;
+}
+
+int main()
+{
+    char data[100];
+
+    printf("Enter a string:");
+    scanf("%s", data);
+
+    printf("CRC-CCITT = %04X\n", crc_ccitt(data));
 }
